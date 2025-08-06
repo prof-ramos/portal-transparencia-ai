@@ -1,0 +1,36 @@
+o# coderabbit.yaml
+# This file contains configuration settings for the coderabbit tool.
+
+# Project settings
+project:
+  name: portal-transparencia-ai
+  description: Estrutura inteligente e técnica para pesquisa no Portal da Transparência utilizando APIs do Portal da Transparência e SIORG.
+  version: 1.0.0
+
+# API settings
+api:
+  portal:
+    endpoint: https://api.portaltransparencia.gov.br/v2
+    key: ${PORTAL_API_KEY}
+  siorg:
+    endpoint: https://api.siorg.economia.gov.br/openapi.yaml
+
+# Workflow settings
+workflow:
+  steps:
+    - name: Consulta de Pessoa Física
+      command: python src/main.py --cpf ${CPF}
+    - name: Consulta de Pessoa Jurídica
+      command: python src/main.py --cnpj ${CNPJ}
+
+# Contributing guidelines
+contributing:
+  guidelines:
+    - Fork the repository
+    - Create your feature branch (git checkout -b feature/AmazingFeature)
+    - Commit your changes (git commit -m 'Add some AmazingFeature')
+    - Push to the branch (git push origin feature/AmazingFeature)
+    - Open a pull request
+
+# License
+license: MIT
