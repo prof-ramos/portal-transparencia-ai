@@ -3,6 +3,7 @@
 ## Índice
 
 - [Descrição](#descrição)
+- [Fluxos de Consulta](#fluxos-de-consulta)
 - [Instalação](#instalação)
 - [Uso](#uso)
 - [Contribuição](#contribuição)
@@ -10,100 +11,22 @@
 
 ## Descrição
 
-O projeto consiste em estruturar, de maneira inteligente e técnica, pesquisa a ser realizada no Portal da Transparência.
-Essa pesquisa ocorrerá utilizando a API do Portal da Transparência bem como do SIORG. A primeira necessária é a API-KEY, que estará em um arquivo `.env`.
+Este projeto visa estruturar pesquisas inteligentes e técnicas no Portal da Transparência do Governo Federal brasileiro, utilizando as APIs oficiais do Portal da Transparência e do SIORG (Sistema de Informações Organizacionais do Governo Federal). A integração permite consultas precisas e automatizadas sobre pessoas físicas e jurídicas, com foco em dados públicos como vínculos, remunerações, benefícios, sanções e contratos.
 
-[https://api.siorg.economia.gov.br/openapi.yaml](https://api.siorg.economia.gov.br/openapi.yaml)
+A API do Portal da Transparência requer uma chave de autenticação (API-KEY), que deve ser configurada em um arquivo `.env`. Para detalhes sobre os endpoints, consulte a documentação oficial:
 
-## Instalação
+- [API do Portal da Transparência](https://api.portaldatransparencia.gov.br/swagger-ui.html)
+- [API do SIORG](https://api.siorg.economia.gov.br/openapi.yaml)
 
-1. **Clone o repositório:**
+Os fluxos de consulta descritos a seguir maximizam a extração de informações, partindo de identificadores únicos como CPF ou CNPJ.
 
-   ```bash
-   git clone https://github.com/your-repo/portal-transparencia-ai.git
-   cd portal-transparencia-ai
-   ```
+## Fluxos de Consulta
 
-2. **Instale as dependências usando UV:**
+Os fluxos a seguir representam sequências otimizadas para consultas, baseadas na estrutura da API do Portal da Transparência. Eles utilizam endpoints iniciais de mapeamento para identificar registros associados e, subsequentemente, detalhar áreas específicas. Os diagramas são renderizados em formato Mermaid para visualização clara.
 
-   ```bash
-   uv install
-   ```
+### Fluxo 1: Investigando uma Pessoa Física (a partir de um CPF)
 
-3. **Configure a API-KEY:**
-   Crie um arquivo `.env` na raiz do projeto e adicione a sua API-KEY:
-
-   ```plaintext
-   PORTAL_API_KEY=your_api_key_here
-   ```
-
-4. **Execute o projeto:**
-
-   ```bash
-   uv run
-   ```
-
-## Uso
-
-### Consulta de Pessoa Física
-
-Para consultar uma pessoa física, utilize o comando abaixo, substituindo `{CPF}` pelo CPF desejado:
-
-```bash
-python src/main.py --cpf {CPF}
-```
-
-### Consulta de Pessoa Jurídica
-
-Para consultar uma pessoa jurídica, utilize o comando abaixo, substituindo `{CNPJ}` pelo CNPJ desejado:
-
-```bash
-python src/main.py --cnpj {CNPJ}
-```
-
-## Contribuição
-
-Contribuições são bem-vindas! Para contribuir com este projeto, siga os passos abaixo:
-
-1. **Faça um Fork do repositório:**
-
-   ```bash
-   git clone https://github.com/your-repo/portal-transparencia-ai.git
-   cd portal-transparencia-ai
-   ```
-
-2. **Crie uma nova branch:**
-
-   ```bash
-   git checkout -b feature/nome-da-sua-feature
-   ```
-
-3. **Faça suas alterações e faça commit:**
-
-   ```bash
-   git commit -m "Adicione uma descrição clara das suas alterações"
-   ```
-
-4. **Faça push para a sua branch:**
-
-   ```bash
-   git push origin feature/nome-da-sua-feature
-   ```
-
-5. **Abra um Pull Request:**
-   - Vá até o repositório original no GitHub.
-   - Clique em "New Pull Request".
-   - Selecione a sua branch e descreva as suas alterações.
-
-### Código de Conduta
-
-Por favor, leia o [Código de Conduta](CODE_OF_CONDUCT.md) antes de contribuir.
-
-### Relatórios de Bugs
-
-Se você encontrar um bug, por favor, abra um issue no repositório do GitHub. Inclua detalhes sobre o problema, como passos para reproduzir, ambiente, etc.
-
-````
+```mermaid
 graph TD
     A["Início: CPF da Pessoa Física"] --> B["Passo 1: Consulta /api-de-dados/pessoa-fisica com parâmetro cpf={CPF}"]
     B --> C{"Resultados Booleanos Obtidos"}
@@ -124,8 +47,11 @@ graph TD
     G --> G1["Gastos: /api-de-dados/cartoes com cpfPortador={CPF}"]
 
     C --> H["Fim: Dossiê Completo com Vínculos, Remuneração, Benefícios, Sanções e Despesas"]
-    ````
+```
 
+### Fluxo 2: Investigando uma Pessoa Jurídica (a partir de um CNPJ)
+
+```mermaid
 graph TD
     A["Início: CNPJ da Pessoa Jurídica"] --> B["Passo 1: Consulta /api-de-dados/pessoa-juridica com parâmetro cnpj={CNPJ}"]
     B --> C{"Resultados Booleanos Obtidos"}
@@ -146,4 +72,92 @@ graph TD
     G --> G1["Notas Fiscais: /api-de-dados/notas-fiscais com cnpjEmitente={CNPJ}"]
 
     C --> H["Fim: Rastreamento Completo de Contratos, Despesas, Sanções e Notas Fiscais"]
-`
+```
+
+## Instalação
+
+1. **Clone o repositório:**
+
+   ```bash
+   git clone https://github.com/your-repo/portal-transparencia-ai.git
+   cd portal-transparencia-ai
+   ```
+
+2. **Instale as dependências usando UV:**
+
+   ```bash
+   uv install
+   ```
+
+3. **Configure a API-KEY:**
+   Crie um arquivo `.env` na raiz do projeto e adicione a sua API-KEY do Portal da Transparência:
+
+   ```plaintext
+   PORTAL_API_KEY=your_api_key_here
+   ```
+
+4. **Execute o projeto:**
+
+   ```bash
+   uv run src/index.py
+   ```
+
+## Uso
+
+O projeto é implementado em Python, utilizando argumentos de linha de comando para especificar o tipo de consulta.
+
+### Consulta de Pessoa Física
+
+Para consultar uma pessoa física, utilize o comando abaixo, substituindo `{CPF}` pelo CPF desejado:
+
+```bash
+uv run src/index.py --cpf {CPF}
+```
+
+### Consulta de Pessoa Jurídica
+
+Para consultar uma pessoa jurídica, utilize o comando abaixo, substituindo `{CNPJ}` pelo CNPJ desejado:
+
+```bash
+uv run src/index.py --cnpj {CNPJ}
+```
+
+Esses comandos seguem os fluxos descritos na seção anterior, gerando relatórios detalhados com base nos dados disponíveis.
+
+## Contribuição
+
+Contribuições são bem-vindas e devem seguir padrões de qualidade e documentação. Para contribuir:
+
+1. **Faça um Fork do repositório.**
+
+2. **Crie uma nova branch para sua feature ou correção:**
+
+   ```bash
+   git checkout -b feature/nome-da-sua-feature
+   ```
+
+3. **Realize as alterações e commit com mensagens claras:**
+
+   ```bash
+   git commit -m "Descrição precisa das alterações implementadas"
+   ```
+
+4. **Envie para o repositório remoto:**
+
+   ```bash
+   git push origin feature/nome-da-sua-feature
+   ```
+
+5. **Abra um Pull Request no repositório original,** descrevendo as mudanças, impactos e testes realizados.
+
+### Código de Conduta
+
+Adira ao [Código de Conduta](CODE_OF_CONDUCT.md) para manter um ambiente colaborativo respeitoso.
+
+### Relatórios de Bugs
+
+Registre issues no GitHub com detalhes reproduzíveis, incluindo ambiente, passos e logs de erro.
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT. Consulte o arquivo [LICENSE](LICENSE) para detalhes.
